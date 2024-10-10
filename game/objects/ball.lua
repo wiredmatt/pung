@@ -1,13 +1,20 @@
-local Object = require("lib.object")
+local GameObject           = require "game.objects.game_object"
+local WithPhysicsCallbacks = require("game.objects.mix.with_physics_callbacks")
 
----@class Ball : Object
-local Ball = Object:extend()
+---@class Ball : GameObject, GameObjectWithMaybePhysicsCallbacks
+---@field radius number
+---@field new fun(self, color: vec4?, physics_world: love.World): Ball
+local Ball                 = Class('Ball', GameObject)
 
-Ball.radius = 15 -- sprite is 30x30
+Ball:include(WithPhysicsCallbacks)
 
 ---@param color vec4?
 ---@param physics_world love.World
-function Ball:new(color, physics_world)
+function Ball:initialize(color, physics_world)
+    GameObject.initialize(self)
+
+    self.radius = 15 -- sprite is 30x30 px
+
     self.x = (VIRTUAL_WIDTH / 2)
     self.y = (VIRTUAL_HEIGHT / 2)
     self.image = gl.newImage("assets/sprites/ball.png")
@@ -18,14 +25,13 @@ function Ball:new(color, physics_world)
     self.shape = physics.newCircleShape(self.radius)
     self.body = physics.newBody(physics_world, self.x, self.y, "dynamic")
     self.fixture = physics.newFixture(self.body, self.shape, 0.1)
-    self.fixture:setUserData("ball")
+    self:reset()
 
     self.move_speed = 300
 
-    -- Initialize particle system
-    self.particles = {}
+    self:register_physics_callbacks()
 
-    self:reset()
+    self.particles = {}
 end
 
 function Ball:reset()
@@ -96,7 +102,7 @@ function Ball:update(dt)
     table.insert(self.particles, particle)
 end
 
-function Ball:beginContact(a, b, coll)
+function Ball:begin_contact(a, b, coll)
     local nx, ny = coll:getNormal()
     local vx, vy = self.body:getLinearVelocity()
 

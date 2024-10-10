@@ -12,7 +12,7 @@ end
 _G.PX_MT = 30 -- 1 meter = 30 pixels
 _G.VIRTUAL_WIDTH, _G.VIRTUAL_HEIGHT = 640, 360
 
-_G.WINDOW_WIDTH, _G.WINDOW_HEIGHT = window.getDesktopDimensions()
+_G.WINDOW_WIDTH, _G.WINDOW_HEIGHT = window.getDesktopDimensions() --[[@as number]]
 _G.WINDOW_WIDTH, _G.WINDOW_HEIGHT = WINDOW_WIDTH / 1.5, WINDOW_HEIGHT / 1.5
 
 ---@generic T
@@ -38,3 +38,5 @@ function _G.copy(o, seen)
     end
     return no
 end
+
+Class = require("lib.class")

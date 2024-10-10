@@ -5,12 +5,13 @@ local Paddle = require("game.objects.paddle")
 ---@field reaction_time number
 ---@field last_update number
 ---@field ball Ball
-local Ai = Paddle:extend()
+---@field new fun(self, ball, ...): Ai
+local Ai = Class('Ai', Paddle)
 
 ---@param ball Ball
-function Ai:new(ball, ...)
+function Ai:initialize(ball, ...)
     self.color = { 0.2, 0, 0.25, 1 }
-    Ai.super.new(self, ...)
+    Paddle.initialize(self, ...)
 
     self.reaction_time = love.math.random(0.1, 0.3)
     self.prediction_error = love.math.random(-30, 30)
@@ -41,7 +42,7 @@ function Ai:update(dt)
         self.decision_threshold = love.math.random(self.height / 5, self.height / 3)
     end
 
-    Ai.super.update(self, dt)
+    Paddle.update(self, dt)
 end
 
 return Ai

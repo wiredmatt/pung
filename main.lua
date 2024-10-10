@@ -1,7 +1,8 @@
 require('global')
-local Game = require('game')
-local rs = require('lib.rs')
+local Game  = require('game')
+local rs    = require('lib.rs')
 local baton = require('lib.baton')
+local ERS   = require('game.util.escape_rs')
 
 rs.conf({
     game_width = VIRTUAL_WIDTH,
@@ -58,6 +59,8 @@ love.draw = function()
         gl.setScissor(old_x, old_y, old_w, old_h)
     ---@format enable
     rs.pop()
+
+    ERS:draw()
 end
 
 love.resize = function(w, h)

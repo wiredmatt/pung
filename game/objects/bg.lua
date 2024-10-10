@@ -1,12 +1,16 @@
-local Object = require "lib.object"
+local GameObject = require "game.objects.game_object"
 
----@class Bg : Object
-local Bg = Object:extend()
+---@class Bg : GameObject
+---@field super GameObject
+---@field new fun(self, img_path: string, x?: number, y?: number, target_w?: number, target_h?: number): Bg
+local Bg = Class('Bg', GameObject)
 
 ---@param img_path string
 ---@param x number
 ---@param y number
-function Bg:new(img_path, x, y, target_w, target_h)
+function Bg:initialize(img_path, x, y, target_w, target_h)
+    GameObject.initialize(self)
+
     self.image = gl.newImage(img_path)
 
     self.x, self.y = x or 0, y or 0

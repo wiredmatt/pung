@@ -1,6 +1,7 @@
-local Object = require("lib.object")
+local GameObject = require "game.objects.game_object"
 
----@class Paddle : Object
+---@class Paddle : GameObject
+---@field super GameObject
 ---@field x number
 ---@field y number
 ---@field width number
@@ -12,8 +13,8 @@ local Object = require("lib.object")
 ---@field shader love.Shader
 ---@field direction number
 ---@field move_speed number
----@overload fun(...) : Paddle
-local Paddle = Object:extend()
+---@field new fun(x: number, y: number, scale_x: number, scale_y: number, physics_world: love.World): Paddle
+local Paddle = Class('Paddle', GameObject)
 
 Paddle.width, Paddle.height = 17, 120 -- sprite is 17x120
 
@@ -22,7 +23,9 @@ Paddle.width, Paddle.height = 17, 120 -- sprite is 17x120
 ---@param scale_x number
 ---@param scale_y number
 ---@param physics_world love.World
-function Paddle:new(x, y, scale_x, scale_y, physics_world)
+function Paddle:initialize(x, y, scale_x, scale_y, physics_world)
+  GameObject.initialize(self)
+
   self.x = x
   self.y = y
   self.scale_x = scale_x

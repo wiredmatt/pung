@@ -1,9 +1,12 @@
-local Object = require "lib.object"
+local GameObject = require "game.objects.game_object"
 
----@class Wall
-local Wall = Object:extend()
+---@class Wall : GameObject
+---@field new fun(self, x: number, y: number, width: number, height: number, physics_world: love.World): Wall
+local Wall = Class('Wall', GameObject)
 
-function Wall:new(x, y, width, height, physics_world)
+function Wall:initialize(x, y, width, height, physics_world)
+    GameObject.initialize(self)
+
     self.x = x
     self.y = y
     self.width = width

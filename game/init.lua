@@ -1,3 +1,4 @@
+local FontsManager = require "game.util.fonts_manager"
 --- @class Game
 --- @field load fun()
 --- @field update fun(dt: number)
@@ -11,6 +12,7 @@ local Game = {
 Game.load = function()
     window.setTitle(Game.title)
     gl.setDefaultFilter('nearest', 'nearest')
+    FontsManager:load_defaults()
     Game.current_scene = require("game.scenes.gameplay")
     Game.current_scene:load()
 end
