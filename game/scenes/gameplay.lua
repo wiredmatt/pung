@@ -5,40 +5,41 @@ local Wall         = require "game.objects.wall"
 local Bg           = require "game.objects.bg"
 local FontsManager = require "game.util.fonts_manager"
 local ERS          = require "game.util.escape_rs"
-local Signals      = require "lib.singals"
+local Signals      = require "lib.signals"
+local EVENTS       = require "game.constant.events"
 
-local TestScene    = {
-    ---@type { [string]: GameObject }[]
-    nodes = {},
+local Gameplay     = {
+    ---@type GameObject[]
+    objects = {},
     ---@type love.World
     physics_world = nil
 }
 
-function TestScene:load()
-    physics.setMeter(PX_MT)
+function Gameplay:load()
+    gl.setDefaultFilter('nearest', 'nearest')
+    self.objects = {}
     self.physics_world = physics.newWorld(0, 0, true)
-    self.nodes = {}
 
-    table.insert(self.nodes, Bg:new("assets/sprites/board.png"))
+    table.insert(self.objects, Bg:new("assets/sprites/board.png"))
 
     local ball = Ball:new({ 1, 1, 1, 1 }, self.physics_world)
-    table.insert(self.nodes, ball)
+    table.insert(self.objects, ball)
 
-    table.insert(self.nodes, Player(
+    table.insert(self.objects, Player(
         (Player.width), (VIRTUAL_HEIGHT / 2),
         1, 1,
         self.physics_world
     ))
 
-    table.insert(self.nodes, Ai(
+    table.insert(self.objects, Ai(
         ball,
         VIRTUAL_WIDTH - (Ai.width), (VIRTUAL_HEIGHT / 2),
         -1, 1,
         self.physics_world
     ))
 
-    table.insert(self.nodes, Wall(VIRTUAL_WIDTH / 2, -5, VIRTUAL_WIDTH, 10, self.physics_world))
-    table.insert(self.nodes, Wall(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT + 5, VIRTUAL_WIDTH, 10, self.physics_world))
+    table.insert(self.objects, Wall(VIRTUAL_WIDTH / 2, -5, VIRTUAL_WIDTH, 10, self.physics_world))
+    table.insert(self.objects, Wall(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT + 5, VIRTUAL_WIDTH, 10, self.physics_world))
 
     self.physics_world:setCallbacks(
         function(a, b, coll)
@@ -63,12 +64,12 @@ function TestScene:load()
         end
     )
 
-    ball:launch()
+    Signals:emit(EVENTS.LAUNCH_BALL)
 end
 
-function TestScene:draw()
-    for _, node in ipairs(self.nodes) do
-        node:draw()
+function Gameplay:draw()
+    for _, object in ipairs(self.objects) do
+        object:draw()
     end
 
     ERS:queue_draw(function()
@@ -82,11 +83,11 @@ function TestScene:draw()
     end
 end
 
-function TestScene:update(dt)
+function Gameplay:update(dt)
     self.physics_world:update(dt)
-    for _, node in ipairs(self.nodes) do
-        node:update(dt)
+    for _, object in ipairs(self.objects) do
+        object:update(dt)
     end
 end
 
-return TestScene
+return Gameplay

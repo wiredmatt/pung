@@ -1,9 +1,4 @@
-local Signals              = require "lib.singals"
-
----@class GameObjectWithMaybePhysicsCallbacks : GameObjectWithPhysics
----@field begin_contact function?
----@field end_contact function?
----@field register_physics_callbacks fun(self, _begin: function?, _end: function?)
+local Signals = require "lib.signals"
 
 ---@class WithPhysicsCallbacks
 local WithPhysicsCallbacks = {
@@ -16,23 +11,24 @@ local WithPhysicsCallbacks = {
 
         self.fixture:setUserData(self.id)
 
-        local signal_begin_contact = Signals:new(self.id .. "_begin_contact")
-        local signal_end_contact = Signals:new(self.id .. "_end_contact")
+        local signals = {
+            begin_contact = Signals:new(self.id .. "_begin_contact"),
+            end_contact = Signals:new(self.id .. "_end_contact")
+        }
 
-        _begin = _begin or self.begin_contact
+        local callbacks = {
+            begin_contact = self[_begin] or self.begin_contact,
+            end_contact = self[_end] or self.end_contact
+        }
 
-        _end = _end or self.end_contact
-
-        Signals:subscribe(signal_begin_contact.id, function(a, b, coll)
-            if _begin ~= nil then
-                _begin(self, a, b, coll)
+        for key, signal in pairs(signals) do
+            local callback = callbacks[key]
+            if callback ~= nil then
+                Signals:subscribe(signal.id, function(a, b, coll)
+                    callback(self, a, b, coll)
+                end)
             end
-        end)
-        Signals:subscribe(signal_end_contact.id, function(a, b, coll)
-            if _end ~= nil then
-                _end(self, a, b, coll)
-            end
-        end)
+        end
     end
 }
 

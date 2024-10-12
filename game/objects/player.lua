@@ -2,17 +2,17 @@ local Paddle = require("game.objects.paddle")
 
 ---@class Player : Paddle
 ---@field super Paddle
----@field new fun(self,...): Player
+---@field new fun(self, ...): Player
 local Player = Class('Player', Paddle)
 
 function Player:initialize(...)
-    self.color = { 1, 0, 0, 1 }
-    Paddle.initialize(self, ...)
+    Paddle.initialize(self, { 1, 0, 0, 1 }, ...)
 end
 
 function Player:update(dt)
-    Paddle.update(self, dt)
     self:handle_input(dt)
+
+    Paddle.update(self, dt)
 end
 
 function Player:handle_input(dt)

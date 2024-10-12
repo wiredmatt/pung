@@ -1,3 +1,11 @@
+if arg[2] == "-debug" then
+    if pcall(require, "lldebugger") then
+        require("lldebugger").start()
+    else
+        print("lldebugger not found")
+    end
+end
+
 require('global')
 local Game  = require('game')
 local rs    = require('lib.rs')
@@ -41,9 +49,8 @@ end
 
 love.update = function(dt)
     input:update()
-
     if input:pressed("restart") then
-        Game.load()
+        return Game.load()
     end
 
     Game.update(dt)

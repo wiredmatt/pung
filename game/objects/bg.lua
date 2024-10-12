@@ -1,13 +1,14 @@
 local GameObject = require "game.objects.game_object"
 
 ---@class Bg : GameObject
----@field super GameObject
 ---@field new fun(self, img_path: string, x?: number, y?: number, target_w?: number, target_h?: number): Bg
 local Bg = Class('Bg', GameObject)
 
 ---@param img_path string
 ---@param x number
 ---@param y number
+---@param target_w number
+---@param target_h number
 function Bg:initialize(img_path, x, y, target_w, target_h)
     GameObject.initialize(self)
 

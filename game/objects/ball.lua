@@ -1,11 +1,11 @@
 local GameObject           = require "game.objects.game_object"
-local WithPhysicsCallbacks = require("game.objects.mix.with_physics_callbacks")
+local WithPhysicsCallbacks = require "game.objects.mix.with_physics_callbacks"
+local Signals              = require "lib.signals"
+local EVENTS               = require "game.constant.events"
 
----@class Ball : GameObject, GameObjectWithMaybePhysicsCallbacks
----@field radius number
+---@class Ball : GameObjectWithMaybePhysicsCallbacks
 ---@field new fun(self, color: vec4?, physics_world: love.World): Ball
 local Ball                 = Class('Ball', GameObject)
-
 Ball:include(WithPhysicsCallbacks)
 
 ---@param color vec4?
@@ -14,6 +14,10 @@ function Ball:initialize(color, physics_world)
     GameObject.initialize(self)
 
     self.radius = 15 -- sprite is 30x30 px
+
+    self.particles = {}
+
+    self.move_speed = 300
 
     self.x = (VIRTUAL_WIDTH / 2)
     self.y = (VIRTUAL_HEIGHT / 2)
@@ -27,11 +31,17 @@ function Ball:initialize(color, physics_world)
     self.fixture = physics.newFixture(self.body, self.shape, 0.1)
     self:reset()
 
-    self.move_speed = 300
-
     self:register_physics_callbacks()
 
-    self.particles = {}
+    self:register_launch_signal()
+end
+
+function Ball:register_launch_signal()
+    local signal = Signals:new(EVENTS.LAUNCH_BALL)
+
+    Signals:subscribe(signal.id, function()
+        self:launch()
+    end)
 end
 
 function Ball:reset()
@@ -102,6 +112,7 @@ function Ball:update(dt)
     table.insert(self.particles, particle)
 end
 
+---@type ContactCallback
 function Ball:begin_contact(a, b, coll)
     local nx, ny = coll:getNormal()
     local vx, vy = self.body:getLinearVelocity()

@@ -4,6 +4,11 @@ local GameObject = require "game.objects.game_object"
 ---@field new fun(self, x: number, y: number, width: number, height: number, physics_world: love.World): Wall
 local Wall = Class('Wall', GameObject)
 
+---@param x number
+---@param y number
+---@param width number
+---@param height number
+---@param physics_world love.World
 function Wall:initialize(x, y, width, height, physics_world)
     GameObject.initialize(self)
 

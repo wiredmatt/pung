@@ -1,17 +1,12 @@
 local Paddle = require("game.objects.paddle")
 
 ---@class Ai : Paddle
----@field super Paddle
----@field reaction_time number
----@field last_update number
----@field ball Ball
 ---@field new fun(self, ball, ...): Ai
 local Ai = Class('Ai', Paddle)
 
 ---@param ball Ball
 function Ai:initialize(ball, ...)
-    self.color = { 0.2, 0, 0.25, 1 }
-    Paddle.initialize(self, ...)
+    Paddle.initialize(self, { 0.2, 0, 0.25, 1 }, ...)
 
     self.reaction_time = love.math.random(0.1, 0.3)
     self.prediction_error = love.math.random(-30, 30)

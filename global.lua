@@ -4,8 +4,8 @@ _G.physics = love.physics
 
 for _, v in ipairs(arg) do
     if v == "-debug" then
-        print("Debug mode enabled")
         _G.debug_physics = require("lib.debug_physics")
+        print("Debug mode enabled")
     end
 end
 
